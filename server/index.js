@@ -31,19 +31,21 @@ app.use(errorHandler);
 // Database Connection and Server Start
 const startServer = async () => {
   try {
-    // Authenticate database connection
     await sequelize.authenticate();
     console.log('Database connected successfully.');
-
-    // Sync models (optional, use migrations in production)
     await sequelize.sync({ force: false });
 
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
-    });
+    // Only listen if not running in a serverless environment
+    if (process.env.NODE_ENV !== 'production') {
+      app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+      });
+    }
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
 };
 
 startServer();
+
+module.exports = app;
