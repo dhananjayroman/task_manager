@@ -19,8 +19,9 @@ app.use(express.json());
 
 // Routes
 app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to the Full-Stack API' });
+  res.json({ message: 'Welcome to the Full-Stack API 🚀' });
 });
+
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/tasks', taskRoutes);
@@ -28,21 +29,21 @@ app.use('/api/tasks', taskRoutes);
 // Error Handling Middleware
 app.use(errorHandler);
 
-// Database Connection and Server Start
+// Start Server + DB Connection
 const startServer = async () => {
   try {
     await sequelize.authenticate();
     console.log('Database connected successfully.');
+
     await sequelize.sync({ force: false });
 
-    // Only listen if not running in a serverless environment
-    if (process.env.NODE_ENV !== 'production') {
-      app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
-      });
-    }
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+
   } catch (error) {
     console.error('Unable to connect to the database:', error);
+    process.exit(1); // fail fast (important for Render logs)
   }
 };
 
